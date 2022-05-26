@@ -6,4 +6,5 @@ import sent.neuro.boardgame.player.Player;
 
 public interface Controller {
     Move yourMove(Board board, Player player);
+    void errorHandler(Throwable error);
 }

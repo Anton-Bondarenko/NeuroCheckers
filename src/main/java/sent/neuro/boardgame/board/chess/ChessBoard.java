@@ -22,13 +22,13 @@ public class ChessBoard implements Board {
 
     public ChessBoard() {
         rows = Stream.generate(ArrayList<ChessCell>::new).limit(ROWS_NUM).collect(Collectors.toList());
-        rows.forEach(files -> files = Stream.generate(ChessCell::new).limit(FILES_NUM).collect(Collectors.toList()));
+        rows.forEach(files -> files.addAll(Stream.generate(ChessCell::new).limit(FILES_NUM).collect(Collectors.toList())));
     }
 
     @Override
     public Cell getCell(Position position) {
         var chessPosition = (ChessBoardPosition) position;
-        return rows.get(chessPosition.getRow() - 1).get(((ChessBoardPosition) position).getFileLetter().getFileNumber());
+        return rows.get(chessPosition.getRank() - 1).get(((ChessBoardPosition) position).getFileLetter().getFileNumber());
     }
 
     @Override
@@ -99,10 +99,10 @@ public class ChessBoard implements Board {
         @Getter
         private final FileLetter fileLetter;
         @Getter
-        private final int row;
-        public ChessBoardPosition(FileLetter fileLetter, int row) {
+        private final int rank;
+        public ChessBoardPosition(FileLetter fileLetter, int rank) {
             this.fileLetter = fileLetter;
-            this.row = row;
+            this.rank = rank;
         }
     }
 }

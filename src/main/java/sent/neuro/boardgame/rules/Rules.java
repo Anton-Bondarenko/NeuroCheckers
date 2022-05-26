@@ -16,7 +16,7 @@ public interface Rules {
 
     boolean isAbleToMove(Board board, Player player);
 
-    Player nextMove(Board board, List<Player> players, Player moveHolder) throws NotAbleToMove;
+    Player nextPlayer(Board board, List<Player> players, Player moveHolder) throws NotAbleToMove;
 
     List<Player> initialPlayers();
 }

@@ -2,7 +2,7 @@ package sent.neuro.boardgame.figure;
 
 import lombok.Getter;
 import lombok.Setter;
-import sent.neuro.boardgame.board.chess.BlackOrWhite;
+import sent.neuro.boardgame.player.BlackOrWhite;
 
 public class CheckerFigure implements Figure {
     @Getter
