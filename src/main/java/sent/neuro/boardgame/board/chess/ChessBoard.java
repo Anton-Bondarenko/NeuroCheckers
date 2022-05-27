@@ -16,13 +16,13 @@ import java.util.stream.Stream;
 
 public class ChessBoard implements Board {
     public static final int ROWS_NUM = 8;
-    public static final int FILES_NUM = 8;
+    public static final int COLS_NUM = 8;
 
     private final List<List<ChessCell>> rows;
 
     public ChessBoard() {
         rows = Stream.generate(ArrayList<ChessCell>::new).limit(ROWS_NUM).collect(Collectors.toList());
-        rows.forEach(files -> files.addAll(Stream.generate(ChessCell::new).limit(FILES_NUM).collect(Collectors.toList())));
+        rows.forEach(files -> files.addAll(Stream.generate(ChessCell::new).limit(COLS_NUM).collect(Collectors.toList())));
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ChessBoard implements Board {
 
     @Override
     public List<Cell> getCells() {
-        var cells = new ArrayList<Cell>(ROWS_NUM * FILES_NUM);
+        var cells = new ArrayList<Cell>(ROWS_NUM * COLS_NUM);
         rows.forEach(cells::addAll);
         return cells;
     }

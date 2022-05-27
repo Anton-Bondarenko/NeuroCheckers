@@ -1,11 +1,13 @@
 package sent.neuro.boardgame;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import sent.neuro.boardgame.controller.CheckerConsoleController;
-import sent.neuro.boardgame.game.Play;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import sent.neuro.boardgame.controller.CheckerController;
+import sent.neuro.boardgame.gui.GameWindow;
 import sent.neuro.boardgame.rules.CheckersRules;
 
 @SpringBootApplication
@@ -13,15 +15,19 @@ import sent.neuro.boardgame.rules.CheckersRules;
 public class NeuroBoardGamesApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
-        SpringApplication.run(NeuroBoardGamesApplication.class, args);
+        new SpringApplicationBuilder(NeuroBoardGamesApplication.class)
+                .web(WebApplicationType.NONE)
+                .headless(false)
+                .bannerMode(Banner.Mode.OFF)
+                .run(args);
     }
 
     @Override
     public void run(String... args) {
         log.info("EXECUTING : command line runner");
-
-        var play = new Play(new CheckersRules(), new CheckerConsoleController());
-        play.playGame();
+        var gameWindow = new GameWindow(new CheckerController(new CheckersRules()));
+        gameWindow.showGameWindow();
+        gameWindow.startNewGame();
     }
 
 }
