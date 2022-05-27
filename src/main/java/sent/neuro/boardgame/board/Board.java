@@ -10,5 +10,6 @@ public interface Board {
     void moveFigure(Figure figure, Position newPosition) throws DoNotBreakBoardException;
     void addFigure(Figure figure, Position position) throws DoNotBreakBoardException;
     void removeFigure(Position position) throws DoNotBreakBoardException;
-    Cell whereAmI(Figure figure) throws DoNotBreakBoardException;
+    Cell getFigureCell(Figure figure) throws DoNotBreakBoardException;
+    Position getCellPosition(Cell cell) throws DoNotBreakBoardException;
 }

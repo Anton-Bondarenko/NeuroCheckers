@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import sent.neuro.boardgame.controller.CheckerController;
 import sent.neuro.boardgame.gui.GameWindow;
-import sent.neuro.boardgame.rules.CheckersRules;
+import sent.neuro.boardgame.rules.checkers.CheckersRules;
 
 @SpringBootApplication
 @Slf4j

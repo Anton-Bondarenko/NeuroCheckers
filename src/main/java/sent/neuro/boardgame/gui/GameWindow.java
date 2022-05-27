@@ -11,19 +11,20 @@ import sent.neuro.boardgame.game.exceptions.PlayException;
 import sent.neuro.boardgame.move.Move;
 import sent.neuro.boardgame.move.checkers.CheckersMove;
 import sent.neuro.boardgame.player.BlackOrWhite;
+import sent.neuro.boardgame.player.CheckersPlayer;
 import sent.neuro.boardgame.player.Player;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.Arrays;
 
 @Slf4j
+@SuppressWarnings("unused")
 public class GameWindow extends JFrame {
     private static final String BOARD_IMG_RES = "img/Knights-board.png";
 
-    private static final int WND_WIDTH = 400;
+    private static final int WND_WIDTH = 450;
     private static final int WND_HEIGHT = 400;
 
     private static final int BRD_LEFT_BORDER = 24;
@@ -47,10 +48,12 @@ public class GameWindow extends JFrame {
     private JTextField toFileInput;
     private JTextField fromRankInput;
     private JTextField toRankInput;
-    private JLabel fromFileLbl;
-    private JLabel fromRankLbl;
-    private JLabel toFileLbl;
-    private JLabel toRankLbl;
+    private JLabel fromLbl;
+    private JLabel toLbl;
+    private JLabel rankLbl;
+    private JLabel fileLbl;
+    private JLabel playerLbl;
+    private JLabel errorLbl;
 
     private Player moveHolder;
 
@@ -58,6 +61,7 @@ public class GameWindow extends JFrame {
         this.controller = controller;
         newGameButton.addActionListener(event -> startNewGame());
         moveButton.addActionListener(event -> doMove(getMove()));
+        errorLbl.setPreferredSize(new Dimension(100, 20));
     }
 
     private Graphics2D getBoardGraphics() {
@@ -77,14 +81,21 @@ public class GameWindow extends JFrame {
     }
 
     private void drawState(Board board) {
-        for (var rank = 1; rank <= ChessBoard.ROWS_NUM; rank++) {
-            int finalRank = rank;
-            Arrays.stream(ChessBoard.FileLetter.values()).forEach(file -> {
-                var position = new ChessBoard.ChessBoardPosition(file, finalRank);
+        for (var rankInd = 0; rankInd < ChessBoard.ROWS_NUM; rankInd++) {
+            for (var fileInd = 0; fileInd < ChessBoard.COLS_NUM; fileInd++) {
+                var position = new ChessBoard.ChessBoardPosition(fileInd, rankInd);
                 var figure = (CheckerFigure) board.getCell(position).getFigure();
                 if (figure != null) drawFigure(figure, position);
-            });
+            }
         }
+    }
+
+    private void drawInfo(CheckersPlayer player){
+        playerLbl.setText(player.getColour().toString());
+    }
+
+    private void showMessage(String message){
+        errorLbl.setText(message);
     }
 
     private void drawFigure(@NonNull CheckerFigure figure, @NonNull ChessBoard.ChessBoardPosition position) {
@@ -96,16 +107,17 @@ public class GameWindow extends JFrame {
         }
         var cellWidth = BRD_AREA_WIDTH / ChessBoard.COLS_NUM;
         var cellHeight = BRD_AREA_HEIGHT / ChessBoard.ROWS_NUM;
-        var realX = BRD_LEFT_BORDER + cellWidth * position.getFileLetter().getFileNumber() + BRD_H_SHIFT_CELL;
-        var realY = BRD_FULL_HEIGHT - (BRD_BOTTOM_BORDER + (cellHeight * (position.getRank() - 1))) - BRD_V_SHIFT_CELL;
+        var realX = BRD_LEFT_BORDER + cellWidth * position.getFileInd() + BRD_H_SHIFT_CELL;
+        var realY = BRD_FULL_HEIGHT - (BRD_BOTTOM_BORDER + (cellHeight * (position.getRankInd()))) - BRD_V_SHIFT_CELL;
         g.fillOval(realX, realY, cellWidth / 2, cellHeight / 2);
         g.setColor(Color.BLACK);
         g.drawOval(realX, realY, cellWidth / 2, cellHeight / 2);
     }
 
-    public void drawAll(Board board){
+    public void drawAll(Controller controller){
         drawBoard();
-        drawState(board);
+        drawState(controller.getBoard());
+        drawInfo((CheckersPlayer) moveHolder);
     }
 
     public void showGameWindow() {
@@ -121,20 +133,20 @@ public class GameWindow extends JFrame {
 
     public void startNewGame() {
         moveHolder = controller.startNewGame();
-        drawAll(controller.getBoard());
+        drawAll(controller);
     }
 
     private Position getFigurePosition(){
         return new ChessBoard.ChessBoardPosition(
-                ChessBoard.FileLetter.valueOf(fromFileInput.getText().toUpperCase()),
-                Integer.parseInt(fromRankInput.getText())
+                ChessBoard.FileLetter.valueOf(fromFileInput.getText().toUpperCase()).getFileIndex(),
+                Integer.parseInt(fromRankInput.getText()) - 1
         );
     }
 
     private Position getNewPosition(){
         return new ChessBoard.ChessBoardPosition(
-                ChessBoard.FileLetter.valueOf(toFileInput.getText().toUpperCase()),
-                Integer.parseInt(toRankInput.getText())
+                ChessBoard.FileLetter.valueOf(toFileInput.getText().toUpperCase()).getFileIndex(),
+                Integer.parseInt(toRankInput.getText()) - 1
         );
     }
 
@@ -146,8 +158,9 @@ public class GameWindow extends JFrame {
     public void doMove(Move move){
         try {
             moveHolder = controller.nextMove(move);
-            drawAll(controller.getBoard());
+            drawAll(controller);
         } catch (PlayException e) {
+            showMessage(e.getMessage());
             log.error("Wrong move: {}", e.getMessage());
         }
     }

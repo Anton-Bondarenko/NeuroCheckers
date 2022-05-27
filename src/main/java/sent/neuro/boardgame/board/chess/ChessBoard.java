@@ -28,7 +28,7 @@ public class ChessBoard implements Board {
     @Override
     public Cell getCell(Position position) {
         var chessPosition = (ChessBoardPosition) position;
-        return rows.get(chessPosition.getRank() - 1).get(((ChessBoardPosition) position).getFileLetter().getFileNumber());
+        return rows.get(chessPosition.getRankInd()).get(((ChessBoardPosition) position).getFileInd());
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ChessBoard implements Board {
     public void moveFigure(Figure figure, Position newPosition) throws DoNotBreakBoardException {
         var newCell = (ChessCell) getCell(newPosition);
         cellShouldBeEmpty(newCell);
-        var oldCell = whereAmI(figure);
+        var oldCell = getFigureCell(figure);
         cellShouldNotBeEmpty(oldCell);
 
         newCell.setFigure(figure);
@@ -69,8 +69,20 @@ public class ChessBoard implements Board {
     }
 
     @Override
-    public Cell whereAmI(Figure figure) throws DoNotBreakBoardException {
+    public Cell getFigureCell(Figure figure) throws DoNotBreakBoardException {
         return getCells().stream().filter(cell -> cell.getFigure() == figure).findFirst().orElseThrow(() -> new DoNotBreakBoardException("This figure is not in the game"));
+    }
+
+    @Override
+    public Position getCellPosition(Cell cell) throws DoNotBreakBoardException {
+        for(var row = 0; row < ROWS_NUM; row ++) {
+            var cRows = rows.get(row);
+            for (var col = 0; col < COLS_NUM; col++) {
+            if (cRows.get(col) == cell)
+                return new ChessBoardPosition(col, row);
+            }
+        }
+        throw new DoNotBreakBoardException("Chess board does not have such cell");
     }
 
     private void cellShouldBeEmpty(Cell cell) throws DoNotBreakBoardException {
@@ -81,15 +93,25 @@ public class ChessBoard implements Board {
         if (cell.getFigure() == null) throw new DoNotBreakBoardException("Cannot get figure, cell is empty!");
     }
 
+    public Position getFigurePosition(Figure figure) throws DoNotBreakBoardException {
+        return getCellPosition(getFigureCell(figure));
+    }
+
+    public boolean isEmptyCell(Position position){
+        return getCell(position).getFigure() == null;
+    }
+
     public enum FileLetter {
         A, B, C, D, E, F, G, H;
 
-        public int getFileNumber() {
+        public int getFileIndex() {
             return this.ordinal();
         }
     }
 
     public static class ChessCell implements Cell {
+        @Getter
+        Position position;
         @Getter
         @Setter
         private Figure figure = null;
@@ -97,12 +119,12 @@ public class ChessBoard implements Board {
 
     public static class ChessBoardPosition implements Position {
         @Getter
-        private final FileLetter fileLetter;
+        private final int fileInd;
         @Getter
-        private final int rank;
-        public ChessBoardPosition(FileLetter fileLetter, int rank) {
-            this.fileLetter = fileLetter;
-            this.rank = rank;
+        private final int rankInd;
+        public ChessBoardPosition(int fileInd, int rankInd) {
+            this.fileInd = fileInd;
+            this.rankInd = rankInd;
         }
     }
 }
