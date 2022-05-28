@@ -19,10 +19,12 @@ import java.util.List;
 
 import static sent.neuro.boardgame.player.BlackOrWhite.BLACK;
 import static sent.neuro.boardgame.player.BlackOrWhite.WHITE;
+import static sent.neuro.boardgame.rules.checkers.CheckersUtils.getAllAvailableMoves;
+import static sent.neuro.boardgame.rules.checkers.CheckersUtils.getAllPlayersFigures;
+import static sent.neuro.boardgame.rules.checkers.NormalCheckerRestrictions.allChecks;
 
 @Slf4j
 public class CheckersRules implements Rules {
-    private final NormalCheckerRestrictions checkerRestrictions = new NormalCheckerRestrictions();
 
     @Override
     public Board initialBoard() {
@@ -74,7 +76,7 @@ public class CheckersRules implements Rules {
     public boolean isAllowed(Board board, Move move, Player player) {
         var error = false;
         try {
-            checkerRestrictions.allChecks(board, move, player);
+            allChecks(board, move, player);
         } catch (WrongMove e) {
             log.warn(e.getMessage());
             error = true;
@@ -84,12 +86,13 @@ public class CheckersRules implements Rules {
 
     @Override
     public boolean isWinner(Board board, Player player) {
-        return false;
+        return ((CheckersPlayer)player).getEaten() >= 12;
     }
 
     @Override
     public boolean isAbleToMove(Board board, Player player) {
-        return true;
+        return getAllPlayersFigures((ChessBoard)board, (CheckersPlayer)player).stream().anyMatch(
+                figure -> !getAllAvailableMoves((ChessBoard)board, figure).isEmpty());
     }
 
     @Override

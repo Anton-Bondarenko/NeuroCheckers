@@ -3,6 +3,8 @@ package sent.neuro.boardgame.rules.checkers;
 import sent.neuro.boardgame.board.chess.ChessBoard;
 import sent.neuro.boardgame.board.exceptions.DoNotBreakBoardException;
 import sent.neuro.boardgame.figure.CheckerFigure;
+import sent.neuro.boardgame.figure.Figure;
+import sent.neuro.boardgame.move.Move;
 import sent.neuro.boardgame.player.BlackOrWhite;
 import sent.neuro.boardgame.player.CheckersPlayer;
 
@@ -23,7 +25,7 @@ public class CheckersUtils {
         if (figure.isKing())
             throw new DoNotBreakBoardException(NOT_SUPPORTED);
 
-        var rankDirection = figure.getColour().equals(BlackOrWhite.WHITE)?1:-1;
+        var rankDirection = figure.getColour().equals(BlackOrWhite.WHITE) ? 1 : -1;
         if (position.getFileInd() > 0 && position.getRankInd() < ChessBoard.ROWS_NUM - 1
                 && position.getRankInd() + rankDirection > 0 && position.getRankInd() + rankDirection < ChessBoard.COLS_NUM) {
             positionsAvailable.add(new ChessBoard.ChessBoardPosition(position.getFileInd() - 1, position.getRankInd() + rankDirection));
@@ -40,7 +42,7 @@ public class CheckersUtils {
     public static List<ChessBoard.ChessBoardPosition> getBackwardDiagonals(ChessBoard board, CheckerFigure figure) {
         var positionsAvailable = new ArrayList<ChessBoard.ChessBoardPosition>(2);
         var position = (ChessBoard.ChessBoardPosition) board.getFigurePosition(figure);
-        var rankDirection = figure.getColour().equals(BlackOrWhite.WHITE)?-1:1;
+        var rankDirection = figure.getColour().equals(BlackOrWhite.WHITE) ? -1 : 1;
 
         if (figure.isKing())
             throw new DoNotBreakBoardException(NOT_SUPPORTED);
@@ -121,5 +123,29 @@ public class CheckersUtils {
                         .filter(position -> CheckersUtils.isCanEat(board, figure, (CheckerFigure) board.getFigure(position)))
                         .map(position -> (CheckerFigure) board.getFigure(position))
                         .collect(Collectors.toList());
+    }
+
+    public static boolean isCanPlayerEat(ChessBoard board, CheckersPlayer player) {
+        var playersFigures = CheckersUtils.getAllPlayersFigures(board, player);
+        return playersFigures.stream().anyMatch(figure ->
+                !CheckersUtils.getAvailableEatVariants(board, figure).isEmpty());
+    }
+
+    public static Figure getEatenFigure(ChessBoard board, Move move) {
+        var figure = (CheckerFigure) move.getFigure();
+        var oldPosition = (ChessBoard.ChessBoardPosition) board.getFigurePosition(figure);
+        var newPosition = (ChessBoard.ChessBoardPosition) move.getNewPosition();
+
+        for (var opponentFigure : getAvailableEatVariants(board, figure)) {
+            var opponentPosition = (ChessBoard.ChessBoardPosition) board.getFigurePosition(opponentFigure);
+            var fileDirection = opponentPosition.getFileInd() - oldPosition.getFileInd();
+            var rankDirection = opponentPosition.getRankInd() - oldPosition.getRankInd();
+            if (newPosition.equals(
+                    new ChessBoard.ChessBoardPosition(
+                            oldPosition.getFileInd() + fileDirection * 2,
+                            oldPosition.getRankInd() + rankDirection * 2)))
+                return opponentFigure;
+        }
+        return null;
     }
 }

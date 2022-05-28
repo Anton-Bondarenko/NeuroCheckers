@@ -60,6 +60,11 @@ public class GameWindow extends JFrame {
         errorLbl.setText("");
     }
 
+    private void clearMoveField(){
+        fromInput.setText("");
+        toInput.setText("");
+    }
+
     public void drawAll(GameController gameController) {
         boardPane.setState(gameController.getBoard());
         drawInfo((CheckersPlayer) moveHolder);
@@ -82,13 +87,13 @@ public class GameWindow extends JFrame {
 
     private Position getFigurePosition() {
         var fileInd = ChessBoard.FileLetter.valueOf(fromInput.getText().substring(0, 1).toUpperCase()).getFileIndex();
-        var rankInd = Integer.parseInt(fromInput.getText().substring(1, 2).toUpperCase()) - 1;
+        var rankInd = Integer.parseInt(fromInput.getText().substring(1, 2)) - 1;
         return new ChessBoard.ChessBoardPosition(fileInd, rankInd);
     }
 
     private Position getNewPosition() {
         var fileInd = ChessBoard.FileLetter.valueOf(toInput.getText().substring(0, 1).toUpperCase()).getFileIndex();
-        var rankInd = Integer.parseInt(toInput.getText().substring(1, 2).toUpperCase()) - 1;
+        var rankInd = Integer.parseInt(toInput.getText().substring(1, 2)) - 1;
         return new ChessBoard.ChessBoardPosition(fileInd, rankInd);
     }
 
@@ -102,9 +107,14 @@ public class GameWindow extends JFrame {
             moveHolder = gameController.nextMove(move);
             drawAll(gameController);
             clearMessage();
+            clearMoveField();
         } catch (PlayException e) {
             showMessage(e.getMessage());
             log.error("Wrong move: {}", e.getMessage());
+        }
+        if (gameController.isGameOver()){
+            showMessage("Game Over!");
+            log.info("Game Over");
         }
     }
 }

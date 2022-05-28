@@ -9,39 +9,30 @@ import sent.neuro.boardgame.move.Move;
 import sent.neuro.boardgame.player.CheckersPlayer;
 import sent.neuro.boardgame.player.Player;
 
+import static sent.neuro.boardgame.rules.checkers.CheckersUtils.*;
+
 public class NormalCheckerRestrictions {
-    public void simpleMove(ChessBoard board, Move move) throws WrongMove {
+    private NormalCheckerRestrictions() {
+    }
+
+    public static void simpleMove(ChessBoard board, Move move) throws WrongMove {
         var figure = (CheckerFigure) move.getFigure();
         var newPosition = (ChessBoard.ChessBoardPosition) move.getNewPosition();
 
-        for (var position : CheckersUtils.getAllAvailableMoves(board, figure)) {
+        for (var position : getAllAvailableMoves(board, figure)) {
             if (newPosition.equals(position))
                 return;
         }
         throw new WrongMove("Move is not available");
     }
 
-    public void eatMove(ChessBoard board, Move move) throws WrongMove {
-        var figure = (CheckerFigure) move.getFigure();
-        var oldPosition = (ChessBoard.ChessBoardPosition) board.getFigurePosition(figure);
-        var newPosition = (ChessBoard.ChessBoardPosition) move.getNewPosition();
-
-        for (var opponentFigure : CheckersUtils.getAvailableEatVariants(board, figure)) {
-            var opponentPosition = (ChessBoard.ChessBoardPosition) board.getFigurePosition(opponentFigure);
-            var fileDirection = opponentPosition.getFileInd() - oldPosition.getFileInd();
-            var rankDirection = opponentPosition.getRankInd() - oldPosition.getRankInd();
-            if (newPosition.equals(
-                    new ChessBoard.ChessBoardPosition(
-                            oldPosition.getFileInd() + fileDirection * 2,
-                            oldPosition.getRankInd() + rankDirection * 2)))
-                return;
-        }
-
-        throw new WrongMove("Wrong eat move");
+    public static void eatMove(ChessBoard board, Move move) throws WrongMove {
+        if (getEatenFigure(board, move) == null)
+            throw new WrongMove("Wrong eat move");
     }
 
 
-    public void commonChecks(Move move, CheckersPlayer player) throws WrongMove {
+    public static void commonChecks(Move move, CheckersPlayer player) throws WrongMove {
         var figure = (CheckerFigure) move.getFigure();
         var newPosition = (ChessBoard.ChessBoardPosition) move.getNewPosition();
 
@@ -64,13 +55,7 @@ public class NormalCheckerRestrictions {
             throw new DoNotBreakBoardException("This checks not for a king");
     }
 
-    public boolean isCanPlayerEat(ChessBoard board, CheckersPlayer player) {
-        var playersFigures = CheckersUtils.getAllPlayersFigures(board, player);
-        return playersFigures.stream().anyMatch(figure ->
-                !CheckersUtils.getAvailableEatVariants(board, figure).isEmpty());
-    }
-
-    public void allChecks(Board board, Move move, Player player) throws WrongMove {
+    public static void allChecks(Board board, Move move, Player player) throws WrongMove {
         var checkersPlayer = (CheckersPlayer) player;
         var chessBoard = (ChessBoard) board;
 
