@@ -6,7 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import sent.neuro.boardgame.controller.CheckerController;
+import sent.neuro.boardgame.controller.CheckerGameController;
 import sent.neuro.boardgame.gui.GameWindow;
 import sent.neuro.boardgame.rules.checkers.CheckersRules;
 
@@ -25,7 +25,7 @@ public class NeuroBoardGamesApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         log.info("EXECUTING : command line runner");
-        var gameWindow = new GameWindow(new CheckerController(new CheckersRules()));
+        var gameWindow = new GameWindow(new CheckerGameController(new CheckersRules()));
         gameWindow.showGameWindow();
         gameWindow.startNewGame();
     }

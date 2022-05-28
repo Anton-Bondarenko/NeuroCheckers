@@ -15,7 +15,7 @@ import sent.neuro.boardgame.rules.Rules;
 import java.util.List;
 
 @Slf4j
-public class CheckerController implements Controller {
+public class CheckerGameController implements GameController {
     @Getter
     private final Rules rules;
     private List<Player> players;
@@ -24,7 +24,7 @@ public class CheckerController implements Controller {
     @Getter
     private boolean gameOver = true;
 
-    public CheckerController(Rules rules) {
+    public CheckerGameController(Rules rules) {
         this.rules = rules;
     }
 
@@ -45,7 +45,7 @@ public class CheckerController implements Controller {
         if (gameOver)
             throw new NotAbleToMove("Game is over, folks");
         var moveHolder =  move.getPlayer();
-        if (!rules.isAllowed(board, move))
+        if (!rules.isAllowed(board, move, moveHolder))
             throw new WrongMove("Such move is not allowed");
         try {
             board.moveFigure(move.getFigure(), move.getNewPosition());

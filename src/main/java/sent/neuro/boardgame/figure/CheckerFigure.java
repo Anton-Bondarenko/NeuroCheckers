@@ -9,7 +9,7 @@ public class CheckerFigure implements Figure {
     private final BlackOrWhite colour;
     @Getter
     @Setter
-    private boolean stain = false;
+    private boolean king = false;
 
     public CheckerFigure(BlackOrWhite colour) {
         this.colour = colour;

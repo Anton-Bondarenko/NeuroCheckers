@@ -6,7 +6,7 @@ import sent.neuro.boardgame.move.Move;
 import sent.neuro.boardgame.player.Player;
 import sent.neuro.boardgame.rules.Rules;
 
-public interface Controller {
+public interface GameController {
 
     Board getBoard();
     Rules getRules();

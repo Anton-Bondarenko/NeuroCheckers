@@ -8,9 +8,10 @@ import sent.neuro.boardgame.player.Player;
 import java.util.List;
 
 public interface Rules {
-    boolean isAllowed(Board board, Move move);
 
     Board initialBoard();
+
+    boolean isAllowed(Board board, Move move, Player player);
 
     boolean isWinner(Board board, Player player);
 

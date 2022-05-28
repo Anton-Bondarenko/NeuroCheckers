@@ -7,12 +7,6 @@
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="d53b8" binding="boardPane" layout-manager="GridBagLayout">
-        <constraints border-constraint="Center"/>
-        <properties/>
-        <border type="none"/>
-        <children/>
-      </grid>
       <grid id="75ba8" binding="actionPane" layout-manager="GridBagLayout">
         <constraints border-constraint="East"/>
         <properties/>
@@ -25,30 +19,21 @@
             </constraints>
             <properties>
               <horizontalAlignment value="0"/>
+              <preferredSize width="80" height="30"/>
               <text value="New"/>
             </properties>
           </component>
           <component id="2ac07" class="javax.swing.JButton" binding="moveButton" default-binding="true">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
               <gridbag weightx="0.0" weighty="0.0"/>
             </constraints>
             <properties>
+              <preferredSize width="80" height="30"/>
               <text value="move"/>
             </properties>
           </component>
-          <component id="3e362" class="javax.swing.JTextField" binding="toRankInput">
-            <constraints>
-              <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="-1"/>
-              </grid>
-              <gridbag weightx="1.0" weighty="0.0"/>
-            </constraints>
-            <properties>
-              <text value=""/>
-            </properties>
-          </component>
-          <component id="335e1" class="javax.swing.JTextField" binding="toFileInput">
+          <component id="335e1" class="javax.swing.JTextField" binding="toInput">
             <constraints>
               <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -57,16 +42,7 @@
             </constraints>
             <properties/>
           </component>
-          <component id="132be" class="javax.swing.JTextField" binding="fromRankInput">
-            <constraints>
-              <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="-1"/>
-              </grid>
-              <gridbag weightx="1.0" weighty="0.0"/>
-            </constraints>
-            <properties/>
-          </component>
-          <component id="70067" class="javax.swing.JTextField" binding="fromFileInput">
+          <component id="70067" class="javax.swing.JTextField" binding="fromInput">
             <constraints>
               <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -74,24 +50,6 @@
               <gridbag weightx="1.0" weighty="0.0"/>
             </constraints>
             <properties/>
-          </component>
-          <component id="8eecd" class="javax.swing.JLabel" binding="rankLbl">
-            <constraints>
-              <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-              <gridbag weightx="0.0" weighty="0.0"/>
-            </constraints>
-            <properties>
-              <text value="Rank"/>
-            </properties>
-          </component>
-          <component id="81b1a" class="javax.swing.JLabel" binding="fileLbl">
-            <constraints>
-              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-              <gridbag weightx="0.0" weighty="0.0"/>
-            </constraints>
-            <properties>
-              <text value="File"/>
-            </properties>
           </component>
           <component id="1bb4d" class="javax.swing.JLabel" binding="toLbl">
             <constraints>
@@ -111,6 +69,21 @@
               <text value="From"/>
             </properties>
           </component>
+          <vspacer id="56c6c">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+          </vspacer>
+          <component id="c0ecf" class="javax.swing.JLabel" binding="inputLbl">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="FileRank"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <grid id="95421" layout-manager="BorderLayout" hgap="0" vgap="0">
@@ -121,17 +94,24 @@
           <component id="b6b6d" class="javax.swing.JLabel" binding="playerLbl">
             <constraints border-constraint="West"/>
             <properties>
-              <text value="Player"/>
+              <minimumSize width="70" height="16"/>
+              <preferredSize width="80" height="16"/>
+              <text value="Player colour"/>
             </properties>
           </component>
           <component id="7def2" class="javax.swing.JLabel" binding="errorLbl">
-            <constraints border-constraint="East"/>
+            <constraints border-constraint="Center"/>
             <properties>
+              <alignmentY value="0.5"/>
               <text value="No errors"/>
             </properties>
           </component>
         </children>
       </grid>
+      <component id="db5e1" class="sent.neuro.boardgame.gui.BoardPanel" binding="boardPane">
+        <constraints border-constraint="Center"/>
+        <properties/>
+      </component>
     </children>
   </grid>
 </form>

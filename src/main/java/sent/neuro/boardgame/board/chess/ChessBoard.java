@@ -1,5 +1,6 @@
 package sent.neuro.boardgame.board.chess;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -26,8 +27,11 @@ public class ChessBoard implements Board {
     }
 
     @Override
-    public Cell getCell(Position position) {
+    public Cell getCell(Position position){
         var chessPosition = (ChessBoardPosition) position;
+        if (chessPosition.getFileInd() < 0 || chessPosition.getFileInd() >= COLS_NUM
+                || chessPosition.getRankInd() < 0 || chessPosition.getRankInd() >= ROWS_NUM)
+            throw new DoNotBreakBoardException("Out of Board!");
         return rows.get(chessPosition.getRankInd()).get(((ChessBoardPosition) position).getFileInd());
     }
 
@@ -39,12 +43,12 @@ public class ChessBoard implements Board {
     }
 
     @Override
-    public Figure touchFigure(Position position) {
+    public Figure getFigure(Position position) {
         return getCell(position).getFigure();
     }
 
     @Override
-    public void moveFigure(Figure figure, Position newPosition) throws DoNotBreakBoardException {
+    public void moveFigure(Figure figure, Position newPosition){
         var newCell = (ChessCell) getCell(newPosition);
         cellShouldBeEmpty(newCell);
         var oldCell = getFigureCell(figure);
@@ -55,26 +59,26 @@ public class ChessBoard implements Board {
     }
 
     @Override
-    public void addFigure(@NonNull Figure figure, Position position) throws DoNotBreakBoardException {
+    public void addFigure(@NonNull Figure figure, Position position){
         var cell = (ChessCell) getCell(position);
         cellShouldBeEmpty(cell);
         cell.setFigure(figure);
     }
 
     @Override
-    public void removeFigure(Position position) throws DoNotBreakBoardException {
+    public void removeFigure(Position position){
         var cell = (ChessCell) getCell(position);
         cellShouldNotBeEmpty(cell);
         cell.setFigure(null);
     }
 
     @Override
-    public Cell getFigureCell(Figure figure) throws DoNotBreakBoardException {
+    public Cell getFigureCell(Figure figure){
         return getCells().stream().filter(cell -> cell.getFigure() == figure).findFirst().orElseThrow(() -> new DoNotBreakBoardException("This figure is not in the game"));
     }
 
     @Override
-    public Position getCellPosition(Cell cell) throws DoNotBreakBoardException {
+    public Position getCellPosition(Cell cell){
         for(var row = 0; row < ROWS_NUM; row ++) {
             var cRows = rows.get(row);
             for (var col = 0; col < COLS_NUM; col++) {
@@ -85,15 +89,15 @@ public class ChessBoard implements Board {
         throw new DoNotBreakBoardException("Chess board does not have such cell");
     }
 
-    private void cellShouldBeEmpty(Cell cell) throws DoNotBreakBoardException {
+    private void cellShouldBeEmpty(Cell cell){
         if (cell.getFigure() != null) throw new DoNotBreakBoardException("Cannot put figure here, it is not empty!");
     }
 
-    private void cellShouldNotBeEmpty(Cell cell) throws DoNotBreakBoardException {
+    private void cellShouldNotBeEmpty(Cell cell){
         if (cell.getFigure() == null) throw new DoNotBreakBoardException("Cannot get figure, cell is empty!");
     }
 
-    public Position getFigurePosition(Figure figure) throws DoNotBreakBoardException {
+    public Position getFigurePosition(Figure figure){
         return getCellPosition(getFigureCell(figure));
     }
 
@@ -117,6 +121,7 @@ public class ChessBoard implements Board {
         private Figure figure = null;
     }
 
+    @EqualsAndHashCode
     public static class ChessBoardPosition implements Position {
         @Getter
         private final int fileInd;

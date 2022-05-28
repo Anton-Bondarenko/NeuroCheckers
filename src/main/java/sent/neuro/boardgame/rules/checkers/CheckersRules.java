@@ -6,6 +6,7 @@ import sent.neuro.boardgame.board.chess.ChessBoard;
 import sent.neuro.boardgame.board.exceptions.DoNotBreakBoardException;
 import sent.neuro.boardgame.figure.CheckerFigure;
 import sent.neuro.boardgame.game.exceptions.NotAbleToMove;
+import sent.neuro.boardgame.game.exceptions.WrongMove;
 import sent.neuro.boardgame.move.Move;
 import sent.neuro.boardgame.player.BlackOrWhite;
 import sent.neuro.boardgame.player.CheckersPlayer;
@@ -21,10 +22,7 @@ import static sent.neuro.boardgame.player.BlackOrWhite.WHITE;
 
 @Slf4j
 public class CheckersRules implements Rules {
-    @Override
-    public boolean isAllowed(Board board, Move move) {
-        return true;
-    }
+    private final NormalCheckerRestrictions checkerRestrictions = new NormalCheckerRestrictions();
 
     @Override
     public Board initialBoard() {
@@ -70,6 +68,18 @@ public class CheckersRules implements Rules {
         }
 
         return board;
+    }
+
+    @Override
+    public boolean isAllowed(Board board, Move move, Player player) {
+        var error = false;
+        try {
+            checkerRestrictions.allChecks(board, move, player);
+        } catch (WrongMove e) {
+            log.warn(e.getMessage());
+            error = true;
+        }
+        return !error;
     }
 
     @Override
